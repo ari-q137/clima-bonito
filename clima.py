@@ -247,20 +247,20 @@ with st.sidebar:
     """
     components.html(html_lofi, height=130)
     
-    st.markdown("<br>", unsafe_allow_html=True)
-    st.markdown(f"""
-        <div style="background: {cfg['card']}; border: 1px dashed {cfg['accent']}88; border-radius: 12px; padding: 8px 10px; text-align: center; margin-bottom: 8px;">
+st.markdown("<br>", unsafe_allow_html=True)
+st.markdown(f"""
+        <div style="background: {cfg['card']}; border: 1.5px dashed {cfg['accent']}88; border-radius: 12px; padding: 8px 10px; text-align: center; margin-bottom: 8px;">
             <span style="font-size: 0.75rem; color: {cfg['subtext']}; font-weight: 600; line-height: 1.2; display: block;">
                 💖 Pica con mucho amor el botón <b style="color: {cfg['accent']};">"Ekuipo"</b> para desbloquear una pequeña sorpresa mágica ✨🐾
             </span>
         </div>
     """, unsafe_allow_html=True)
 
-    if st.button("✨ Ekuipo", use_container_width=True):
+    # Usamos una clave única y manejamos el estado sin forzar un st.rerun inmediato peligroso
+if st.button("✨ Ekuipo", use_container_width=True, key="btn_ekuipo_magico"):
         st.session_state.easter_egg_activo = not st.session_state.easter_egg_activo
-        st.rerun()
 
-    if st.session_state.easter_egg_activo:
+if st.session_state.get("easter_egg_activo", False):
         st.balloons()
         st.success("Ekuipo conformado por Ari y Angela 🐾✨")
 
