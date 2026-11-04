@@ -9,9 +9,6 @@ import streamlit as st
 import streamlit.components.v1 as components
 from zoneinfo import ZoneInfo
 
-
-
-
 # Configuración inicial de la página
 st.set_page_config(
     page_title="Clima Bonito • App del Clima", 
@@ -19,8 +16,6 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded"
 )
-
-
 
 # --- CONSULTA A APIS CON PROTECCIÓN TOTAL CONTRA BLOQUEOS ---
 @st.cache_data(ttl=3600, show_spinner=False)
@@ -247,20 +242,19 @@ with st.sidebar:
     """
     components.html(html_lofi, height=130)
     
-st.markdown("<br>", unsafe_allow_html=True)
-st.markdown(f"""
-        <div style="background: {cfg['card']}; border: 1.5px dashed {cfg['accent']}88; border-radius: 12px; padding: 8px 10px; text-align: center; margin-bottom: 8px;">
+    st.markdown("<br>", unsafe_allow_html=True)
+    st.markdown(f"""
+        <div style="background: {cfg['card']}; border: 1px dashed {cfg['accent']}88; border-radius: 12px; padding: 8px 10px; text-align: center; margin-bottom: 8px;">
             <span style="font-size: 0.75rem; color: {cfg['subtext']}; font-weight: 600; line-height: 1.2; display: block;">
                 💖 Pica con mucho amor el botón <b style="color: {cfg['accent']};">"Ekuipo"</b> para desbloquear una pequeña sorpresa mágica ✨🐾
             </span>
         </div>
     """, unsafe_allow_html=True)
 
-    # Usamos una clave única y manejamos el estado sin forzar un st.rerun inmediato peligroso
-if st.button("✨ Ekuipo", use_container_width=True, key="btn_ekuipo_magico"):
+    if st.button("✨ Ekuipo", use_container_width=True, key="btn_ekuipo_magico"):
         st.session_state.easter_egg_activo = not st.session_state.easter_egg_activo
 
-if st.session_state.get("easter_egg_activo", False):
+    if st.session_state.get("easter_egg_activo", False):
         st.balloons()
         st.success("Ekuipo conformado por Ari y Angela 🐾✨")
 
@@ -426,41 +420,42 @@ if not df_p.empty:
 
 def generar_html_animacion_fondo(tipo_clima):
     tc = tipo_clima.lower()
+    # Optimizado con menos elementos repetitivos para que vuele en celulares
     if "noche despejada" in tc or tc == "noche despejada":
-        estrellas = "".join([f'<div class="estrella-noche" style="left: {(i*11)%95}%; top: {(i*13)%85}%; animation-delay: {(i*0.3)%2}s;">✨</div>' for i in range(22)])
+        estrellas = "".join([f'<div class="estrella-noche" style="left: {(i*18)%95}%; top: {(i*22)%85}%; animation-delay: {(i*0.3)%2}s;">✨</div>' for i in range(10)])
         return f'<div class="clima-anim-box"><div class="cometa-veloz-bg"></div><div class="luna-noche">🌙</div>{estrellas}</div>'
     elif "noche parcialmente" in tc:
-        nubes = "".join([f'<div class="nube-desplazandose" style="top: {(12 + i*25)}%; animation-duration: {14 + (i%3)*3}s; animation-delay: {i*2}s;">☁️</div>' for i in range(4)])
+        nubes = "".join([f'<div class="nube-desplazandose" style="top: {(15 + i*30)}%; animation-duration: {16 + (i%2)*4}s; animation-delay: {i*2}s;">☁️</div>' for i in range(2)])
         return f'<div class="clima-anim-box"><div class="luna-noche" style="opacity: 0.8;">🌙</div>{nubes}</div>'
     elif "noche nublada" in tc:
-        nubes_oscuras = "".join([f'<div class="nube-desplazandose-lenta" style="top: {(8 + i*18)}%; animation-duration: {10 + (i%4)*2.5}s; animation-delay: {i*1.2}s;">☁️</div>' for i in range(7)])
+        nubes_oscuras = "".join([f'<div class="nube-desplazandose-lenta" style="top: {(10 + i*25)}%; animation-duration: {12 + (i%2)*3}s; animation-delay: {i*1.2}s;">☁️</div>' for i in range(3)])
         return f'<div class="clima-anim-box"><div class="nebulosa-nocturna"></div>{nubes_oscuras}</div>'
     elif "noche lluviosa" in tc:
-        gotas = "".join([f'<div class="gota-noche" style="left: {i*6}%; animation-delay: {(i*0.07)%1}s;"></div>' for i in range(18)])
+        gotas = "".join([f'<div class="gota-noche" style="left: {i*12}%; animation-delay: {(i*0.1)%1}s;"></div>' for i in range(8)])
         return f'<div class="clima-anim-box"><div class="luna-noche" style="opacity: 0.6;">🌙</div>{gotas}<div class="radar-nocturno"></div></div>'
     elif "tormenta eléctrica nocturna" in tc:
-        gotas = "".join([f'<div class="gota-noche-intensa" style="left: {i*6}%; animation-delay: {(i*0.05)%1}s;"></div>' for i in range(20)])
+        gotas = "".join([f'<div class="gota-noche-intensa" style="left: {i*12}%; animation-delay: {(i*0.1)%1}s;"></div>' for i in range(8)])
         return f'<div class="clima-anim-box"><div class="flash-rayo-pantalla-noche"></div><div class="luna-noche" style="opacity: 0.4;">🌙</div>{gotas}</div>'
     elif "noche nevada" in tc:
-        copos = "".join([f'<div class="copo-noche" style="left: {i*8}%; animation-delay: {(i*0.2)%2}s;">❄️</div>' for i in range(14)])
+        copos = "".join([f'<div class="copo-noche" style="left: {i*15}%; animation-delay: {(i*0.2)%2}s;">❄️</div>' for i in range(6)])
         return f'<div class="clima-anim-box"><div class="luna-noche">🌙</div><div class="aura-fria"></div>{copos}</div>'
     elif "soleado" in tc or tc == "soleado":
-        particulas_sol = "".join([f'<div class="particula-destello-sol" style="left: {(i*19)%92}%; top: {(i*15)%78}%; animation-delay: {(i*0.4)%3}s;">✨</div>' for i in range(12)])
+        particulas_sol = "".join([f'<div class="particula-destello-sol" style="left: {(i*25)%92}%; top: {(i*20)%78}%; animation-delay: {(i*0.4)%3}s;">✨</div>' for i in range(6)])
         return f'<div class="clima-anim-box"><div class="sol-dia-anim">☀️</div>{particulas_sol}</div>'
     elif "parcialmente nublado" in tc:
-        nubes = "".join([f'<div class="nube-desplazandose" style="top: {(10 + i*28)}%; animation-duration: {12 + (i%3)*3}s; animation-delay: {i*1.8}s;">☁️</div>' for i in range(4)])
+        nubes = "".join([f'<div class="nube-desplazandose" style="top: {(15 + i*35)}%; animation-duration: {14 + (i%2)*3}s; animation-delay: {i*1.8}s;">☁️</div>' for i in range(2)])
         return f'<div class="clima-anim-box"><div class="sol-dia-anim" style="opacity: 0.85;">🌤️</div>{nubes}</div>'
     elif tc == "nublado" or "nublado" in tc:
-        nubes = "".join([f'<div class="nube-desplazandose" style="top: {(6 + i*16)}%; animation-duration: {9 + (i%4)*2}s; animation-delay: {i*1.1}s;">☁️</div>' for i in range(8)])
+        nubes = "".join([f'<div class="nube-desplazandose" style="top: {(10 + i*22)}%; animation-duration: {11 + (i%2)*2}s; animation-delay: {i*1.1}s;">☁️</div>' for i in range(4)])
         return f'<div class="clima-anim-box">{nubes}</div>'
     elif "lluvioso" in tc:
-        gotas = "".join([f'<div class="gota-dia" style="left: {i*6}%; animation-delay: {(i*0.07)%1}s;"></div>' for i in range(18)])
+        gotas = "".join([f'<div class="gota-dia" style="left: {i*12}%; animation-delay: {(i*0.1)%1}s;"></div>' for i in range(8)])
         return f'<div class="clima-anim-box">{gotas}</div>'
     elif "tormenta eléctrica" in tc:
-        gotas = "".join([f'<div class="gota-dia-intensa" style="left: {i*6}%; animation-delay: {(i*0.05)%1}s;"></div>' for i in range(20)])
+        gotas = "".join([f'<div class="gota-dia-intensa" style="left: {i*12}%; animation-delay: {(i*0.1)%1}s;"></div>' for i in range(8)])
         return f'<div class="clima-anim-box"><div class="flash-rayo-pantalla-dia"></div>{gotas}</div>'
     elif "nevado" in tc:
-        copos = "".join([f'<div class="copo-dia" style="left: {i*8}%; animation-delay: {(i*0.2)%2}s;">❄️</div>' for i in range(14)])
+        copos = "".join([f'<div class="copo-dia" style="left: {i*15}%; animation-delay: {(i*0.2)%2}s;">❄️</div>' for i in range(6)])
         return f'<div class="clima-anim-box">{copos}</div>'
 
     return '<div class="clima-anim-box"><div class="sol-dia-anim">☀️</div></div>'
@@ -507,8 +502,8 @@ st.markdown(f"""
         85% {{ opacity: 0.85; }}
         100% {{ transform: translateX(115vw); opacity: 0; }}
     }}
-    .nube-desplazandose {{ position: absolute; font-size: 4.5rem; animation: moverNubeFondo linear infinite; filter: drop-shadow(0 6px 15px rgba(0,0,0,0.25)); z-index: 0; }}
-    .nube-desplazandose-lenta {{ position: absolute; font-size: 4.8rem; animation: moverNubeFondo linear infinite; filter: drop-shadow(0 6px 20px rgba(189,178,255,0.2)); z-index: 0; opacity: 0.9; }}
+    .nube-desplazandose {{ position: absolute; font-size: 4.5rem; animation: moverNubeFondo linear infinite; filter: drop-shadow(0 6px 15px rgba(0,0,0,0.25)); z-index: 0; will-change: transform; }}
+    .nube-desplazandose-lenta {{ position: absolute; font-size: 4.8rem; animation: moverNubeFondo linear infinite; filter: drop-shadow(0 6px 20px rgba(189,178,255,0.2)); z-index: 0; opacity: 0.9; will-change: transform; }}
 
     @keyframes brilloEstatico {{
         0%, 100% {{ transform: scale(1); filter: drop-shadow(0 0 15px {cfg['accent']}); }}
@@ -541,17 +536,17 @@ st.markdown(f"""
         30% {{ opacity: 0.9; }}
         100% {{ transform: translateY(100vh); opacity: 0.2; }}
     }}
-    .gota-dia {{ position: absolute; width: 2px; height: 18px; background: {cfg['accent']}; animation: caidaGota 1.2s linear infinite; }}
-    .gota-dia-intensa {{ position: absolute; width: 2.5px; height: 22px; background: {cfg['accent']}; animation: caidaGota 0.7s linear infinite; }}
-    .gota-noche {{ position: absolute; width: 2px; height: 18px; background: #38BDF8; animation: caidaGota 1.2s linear infinite; }}
-    .gota-noche-intensa {{ position: absolute; width: 2.5px; height: 22px; background: #E879F9; animation: caidaGota 0.7s linear infinite; }}
+    .gota-dia {{ position: absolute; width: 2px; height: 18px; background: {cfg['accent']}; animation: caidaGota 1.2s linear infinite; will-change: transform; }}
+    .gota-dia-intensa {{ position: absolute; width: 2.5px; height: 22px; background: {cfg['accent']}; animation: caidaGota 0.7s linear infinite; will-change: transform; }}
+    .gota-noche {{ position: absolute; width: 2px; height: 18px; background: #38BDF8; animation: caidaGota 1.2s linear infinite; will-change: transform; }}
+    .gota-noche-intensa {{ position: absolute; width: 2.5px; height: 22px; background: #E879F9; animation: caidaGota 0.7s linear infinite; will-change: transform; }}
 
     @keyframes caidaCopo {{
         0% {{ transform: translateY(-20px) rotate(0deg); opacity: 0; }}
         30% {{ opacity: 0.9; }}
         100% {{ transform: translateY(100vh) rotate(360deg); opacity: 0.2; }}
     }}
-    .copo-dia, .copo-noche {{ position: absolute; font-size: 1.2rem; animation: caidaCopo 3s linear infinite; }}
+    .copo-dia, .copo-noche {{ position: absolute; font-size: 1.2rem; animation: caidaCopo 3s linear infinite; will-change: transform; }}
 
     @keyframes radarPulso {{
         0% {{ transform: scale(0.8); opacity: 0.05; }}
